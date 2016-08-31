@@ -1,4 +1,4 @@
-package com.devconference.todolist;
+package com.devconference.stackoverflow;
 
 import org.junit.Test;
 
