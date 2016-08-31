@@ -1,4 +1,4 @@
-package com.devconference.todolist;
+package com.devconference.stackoverflow;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
