@@ -2,6 +2,7 @@ package com.devconference.stackoverflow
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -19,17 +20,22 @@ class SearchActivity : AppCompatActivity() {
     retrofit.create(StackOverflowApi::class.java)
   }
 
+  val editSearchInput by lazy { findViewById(R.id.edit_search_input) as SearchWidget }
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_search)
 
-    api.taggedQuestions("Android")
-          .observeOn(AndroidSchedulers.mainThread())
-          .subscribeOn(Schedulers.io())
+    editSearchInput.textChangeSearchBehaviorObservable()
+          .concatMap { query ->
+            api.taggedQuestions(query)
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribeOn(Schedulers.io())
+          }
           .subscribe(
-                { questions -> },
-                { error -> },
-                {}
+                { questions -> Log.d("Uhuu", "Result: ${questions.toString()}") },
+                { error -> Log.e("Uhuu", "Error") },
+                { Log.d("Uhuu", "Completed") }
           )
   }
 
