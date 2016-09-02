@@ -23,7 +23,7 @@ class SearchWidget : EditText {
 
   fun textChangeSearchBehaviorObservable(): Observable<String>
         = textChangeObservable()
-        .skip(1)
+        .skip(3)
         .doOnNext { charSequence -> Log.v(TAG, "Buscando: " + charSequence) }
         .throttleLast(100, TimeUnit.MILLISECONDS)
         .debounce(200, TimeUnit.MILLISECONDS)
