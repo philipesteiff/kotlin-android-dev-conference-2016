@@ -26,6 +26,20 @@ class SearchWidget @JvmOverloads constructor(
     return Observable.create { subscriber -> addTextChangedListener(createSearchTextWatcher(subscriber)) }
   }
 
+  fun textChangeSearchBehaviorObservable(): Observable<String> = textChangeObservable()
+        .skip(3)
+        .doOnNext { charSequence -> Log.v(TAG, "Buscando: " + charSequence) }
+        .throttleLast(100, TimeUnit.MILLISECONDS)
+        .debounce(200, TimeUnit.MILLISECONDS)
+        .onBackpressureLatest()
+        .observeOn(AndroidSchedulers.mainThread())
+        .filter { charSequence -> !charSequence.isNullOrBlank() }
+        .map { charSequence -> charSequence.toString() }
+
+  /**
+   * No java é usado o conceito de classe anônima. Já o Kotlin resolve isso generalizando o conceito
+   * em object expressions e object declarations
+   */
   private fun createSearchTextWatcher(subscriber: Subscriber<in CharSequence>) = object : TextWatcher {
     override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
       if (!subscriber.isUnsubscribed) {
@@ -40,15 +54,6 @@ class SearchWidget @JvmOverloads constructor(
     }
   }
 
-  fun textChangeSearchBehaviorObservable(): Observable<String>
-      = textChangeObservable()
-      .skip(3)
-      .doOnNext { charSequence -> Log.v(TAG, "Buscando: " + charSequence) }
-      .throttleLast(100, TimeUnit.MILLISECONDS)
-      .debounce(200, TimeUnit.MILLISECONDS)
-      .onBackpressureLatest()
-      .observeOn(AndroidSchedulers.mainThread())
-      .filter { charSequence -> !charSequence.isNullOrBlank() }
-      .map { charSequence -> charSequence.toString() }
+
 
 }
