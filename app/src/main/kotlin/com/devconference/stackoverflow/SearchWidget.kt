@@ -7,28 +7,35 @@ import android.util.AttributeSet
 import android.util.Log
 import android.widget.EditText
 import rx.Observable
-import rx.Subscriber
 import rx.android.schedulers.AndroidSchedulers
 import java.util.concurrent.TimeUnit
 
+
+/**
+ * -> JvmOverloads
+ * Faz com que o compilador gere os construtores passando os parametros defaults.
+ */
 class SearchWidget @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0,
-    defStyleRes: Int = 0
+      context: Context,
+      attrs: AttributeSet? = null,
+      defStyleAttr: Int = 0,
+      defStyleRes: Int = 0
 ) : EditText(context, attrs, defStyleAttr, defStyleRes) {
 
+
+  /**
+   * -> Companion object
+   * São instancias de objetos reais, podendo implementar interfaces. Caso seja necessario, podemos
+   * usar eles como métodos estaticos reais com a anotação @JvmStatic
+   *
+   */
   companion object {
     val TAG: String = SearchWidget::class.java.simpleName
   }
 
-  private fun textChangeObservable(): Observable<CharSequence> {
-    return Observable.create { subscriber -> addTextChangedListener(createSearchTextWatcher(subscriber)) }
-  }
-
   fun textChangeSearchBehaviorObservable(): Observable<String> = textChangeObservable()
         .skip(3)
-        .doOnNext { charSequence -> Log.v(TAG, "Buscando: " + charSequence) }
+        .doOnNext { charSequence -> Log.v(TAG, "Buscando: $charSequence") }
         .throttleLast(100, TimeUnit.MILLISECONDS)
         .debounce(200, TimeUnit.MILLISECONDS)
         .onBackpressureLatest()
@@ -36,24 +43,18 @@ class SearchWidget @JvmOverloads constructor(
         .filter { charSequence -> !charSequence.isNullOrBlank() }
         .map { charSequence -> charSequence.toString() }
 
-  /**
-   * No java é usado o conceito de classe anônima. Já o Kotlin resolve isso generalizando o conceito
-   * em object expressions e object declarations
-   */
-  private fun createSearchTextWatcher(subscriber: Subscriber<in CharSequence>) = object : TextWatcher {
-    override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
-      if (!subscriber.isUnsubscribed) {
-        subscriber.onNext(s)
+  private fun textChangeObservable(): Observable<CharSequence> = Observable.create { subscriber ->
+    addTextChangedListener(object : TextWatcher {
+      override fun onTextChanged(s: CharSequence?, p1: Int, p2: Int, p3: Int) {
+        if (!subscriber.isUnsubscribed) subscriber.onNext(s)
       }
-    }
 
-    override fun afterTextChanged(p0: Editable?) {
-    }
+      override fun afterTextChanged(p0: Editable?) {
+      }
 
-    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-    }
+      override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+      }
+    })
   }
-
-
 
 }
