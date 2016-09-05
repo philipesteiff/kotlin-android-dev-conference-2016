@@ -35,14 +35,22 @@
                     android:id="@+id/edit_search_input"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Pesquisar perguntas e respostas"/>
+                    android:hint="Pesquisar perguntas e respostas" />
 
             </android.support.design.widget.TextInputLayout>
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@android:color/darker_gray"/>
+                android:background="@android:color/darker_gray" />
+
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/question_list_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
 
