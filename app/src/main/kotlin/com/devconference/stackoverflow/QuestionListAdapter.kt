@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 class QuestionListAdapter(
-    private val context: Context,
+    context: Context,
     private val questions: List<StackOverflowQuestion>
 ) : RecyclerView.Adapter<QuestionViewHolder>() {
 
