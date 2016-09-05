@@ -2,7 +2,10 @@ package com.devconference.stackoverflow
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.widget.LinearLayout
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -21,7 +24,8 @@ class SearchActivity : AppCompatActivity() {
     retrofit.create(StackOverflowApi::class.java)
   }
 
-  val editSearchInput by lazy { (findViewById(R.id.edit_search_input) as SearchWidget) }
+  val editSearchInput by lazy { findViewById(R.id.edit_search_input) as SearchWidget }
+  val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
 
   private var searchInputSubscription: Subscription? = null
 
@@ -36,10 +40,15 @@ class SearchActivity : AppCompatActivity() {
               .subscribeOn(Schedulers.io())
         }
         .subscribe(
-            { questions -> Log.d("Uhuu", "Result: ${questions.toString()}") },
+            { questions -> populateView(questions) },
             { error -> Log.e("Uhuu", "Error") },
             { Log.d("Uhuu", "Completed") }
         )
+  }
+
+  private fun populateView(questions: StackOverflowQuestions) {
+    questionListRecyclerVIew.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+    questionListRecyclerVIew.adapter = QuestionListAdapter(this, questions.items)
   }
 
   override fun onDestroy() {

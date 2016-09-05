@@ -2,8 +2,7 @@ package com.devconference.stackoverflow
 
 import com.google.gson.annotations.SerializedName
 
-data class StackOverflowQuestion
-(
+data class StackOverflowQuestion(
     @SerializedName("title") val title: String,
     @SerializedName("link") val link: String,
     @SerializedName("view_count") val viewCount: Int,
