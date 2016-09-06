@@ -18,6 +18,16 @@ import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
+/**
+ * 1 - Kotlin IDE Plugin
+ * 2 - Configurando o Kotlin no projeto + dependencia
+ * 3 - Activity + layout + findViewById
+ * 4 - Retrofit request + data classes
+ * 5 - EditText Extension function
+ * 6 - lambda no subscribe do search input
+ * 7 - Tio Guedes
+ */
+
 class SearchActivity : AppCompatActivity() {
 
   val api: StackOverflowApi by lazy {
