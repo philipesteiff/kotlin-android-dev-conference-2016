@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.EditText
 import android.widget.LinearLayout
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
@@ -15,20 +16,21 @@ import retrofit2.converter.gson.GsonConverterFactory
 import rx.Subscription
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
 
 class SearchActivity : AppCompatActivity() {
 
   val api: StackOverflowApi by lazy {
     val retrofit = Retrofit.Builder()
-        .baseUrl("https://api.stackexchange.com")
-        .addConverterFactory(GsonConverterFactory.create())
-        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-        .build()
+          .baseUrl("https://api.stackexchange.com")
+          .addConverterFactory(GsonConverterFactory.create())
+          .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+          .build()
     retrofit.create(StackOverflowApi::class.java)
   }
 
   val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
-  val editSearchInput by lazy { findViewById(R.id.edit_search_input) as SearchWidget }
+  val editSearchInput by lazy { findViewById(R.id.edit_search_input) as EditText }
   val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
 
   private var searchInputSubscription: Subscription? = null
@@ -43,19 +45,26 @@ class SearchActivity : AppCompatActivity() {
     questionListRecyclerVIew.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
     questionListRecyclerVIew.adapter = adapter
 
-    searchInputSubscription = editSearchInput.textChangeSearchBehaviorObservable()
-        .concatMap { query ->
-          api.taggedQuestions(query)
-              .observeOn(AndroidSchedulers.mainThread())
-              .subscribeOn(Schedulers.io())
-        }
-        .subscribe(
-            { questions -> populateView(questions) },
-            { error -> Log.e("Uhuu", "Error") },
-            { Log.d("Uhuu", "Completed") }
-        )
+    searchInputSubscription = editSearchInput.onTextChanged()
+          .skip(3)
+          .doOnNext { charSequence -> Log.v(this.javaClass.simpleName, "Buscando: $charSequence") }
+          .throttleLast(100, TimeUnit.MILLISECONDS)
+          .debounce(200, TimeUnit.MILLISECONDS)
+          .onBackpressureLatest()
+          .observeOn(AndroidSchedulers.mainThread())
+          .filter { charSequence -> !charSequence.isNullOrBlank() }
+          .map { charSequence -> charSequence.toString() }
+          .concatMap { query ->
+            api.taggedQuestions(query)
+                  .observeOn(AndroidSchedulers.mainThread())
+                  .subscribeOn(Schedulers.io())
+          }
+          .subscribe(
+                { questions -> populateView(questions) },
+                { error -> Log.e("Uhuu", "Error") },
+                { Log.d("Uhuu", "Completed") }
+          )
   }
-
 
 
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {

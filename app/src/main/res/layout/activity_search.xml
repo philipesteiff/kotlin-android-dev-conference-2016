@@ -19,10 +19,10 @@
             app:elevation="4dp"
             app:layout_scrollFlags="enterAlways">
 
-            <com.devconference.stackoverflow.SearchWidget
+            <EditText
                 android:id="@+id/edit_search_input"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:hint="Pesquisar perguntas e respostas" />
 
         </android.support.v7.widget.Toolbar>
