@@ -11,12 +11,18 @@ class QuestionListAdapter(
     context: Context
 ) : RecyclerView.Adapter<QuestionViewHolder>() {
 
-  private val questions = mutableListOf<StackOverflowQuestion>()
+  var questions = listOf<StackOverflowQuestion>()
+    set(elements) {
+      field = elements
+      notifyDataSetChanged()
+    }
+
   private val layoutInflater by lazy { LayoutInflater.from(context) }
 
   override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
     with(questions[position]) {
       holder.titleView.text = title
+      holder.detailsView.text = "Score: $score | Respostas: $answerCount | Views: $viewCount"
     }
   }
 
@@ -27,25 +33,23 @@ class QuestionListAdapter(
 
   override fun getItemCount() = questions.size
 
-  fun setQuestions(questions: List<StackOverflowQuestion>) {
-    this.questions.apply {
-      clear()
-      addAll(questions)
-    }
-    notifyDataSetChanged()
-  }
-
   fun scoreAscending() {
-    questions.sortBy { it.score }
+    questions = questions.sortedBy { it.score }
     notifyDataSetChanged()
   }
 
   fun scoreDescending() {
-    questions.sortByDescending { it.score }
+    questions = questions.sortedByDescending { it.score }
+    notifyDataSetChanged()
+  }
+
+  fun showUnanswered() {
+    questions = questions.filter { it.answerCount == 0 }
     notifyDataSetChanged()
   }
 }
 
 class QuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-  val titleView = view.findViewById(R.id.question_title) as TextView
+  val titleView = view.findViewById(R.id.question_title_text_view) as TextView
+  val detailsView = view.findViewById(R.id.question_details_text_view) as TextView
 }

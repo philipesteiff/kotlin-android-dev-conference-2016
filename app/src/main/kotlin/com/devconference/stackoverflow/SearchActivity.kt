@@ -32,19 +32,19 @@ class SearchActivity : AppCompatActivity() {
 
   val api: StackOverflowApi by lazy {
     val retrofit = Retrofit.Builder()
-          .baseUrl("https://api.stackexchange.com")
-          .addConverterFactory(GsonConverterFactory.create())
-          .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-          .build()
+        .baseUrl("https://api.stackexchange.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .build()
     retrofit.create(StackOverflowApi::class.java)
   }
 
-  val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
-  val editSearchInput by lazy { findViewById(R.id.edit_search_input) as EditText }
-  val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
+  private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
+  private val editSearchInput by lazy { findViewById(R.id.edit_search_input) as EditText }
+  private val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
+  private val adapter by lazy { QuestionListAdapter(this) }
 
   private var searchInputSubscription: Subscription? = null
-  private val adapter: QuestionListAdapter by lazy { QuestionListAdapter(this) }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -56,24 +56,24 @@ class SearchActivity : AppCompatActivity() {
     questionListRecyclerVIew.adapter = adapter
 
     searchInputSubscription = editSearchInput.onTextChanged()
-          .skip(3)
-          .doOnNext { charSequence -> Log.v(this.javaClass.simpleName, "Buscando: $charSequence") }
-          .throttleLast(100, TimeUnit.MILLISECONDS)
-          .debounce(200, TimeUnit.MILLISECONDS)
-          .onBackpressureLatest()
-          .observeOn(AndroidSchedulers.mainThread())
-          .filter { charSequence -> !charSequence.isNullOrBlank() }
-          .map { charSequence -> charSequence.toString() }
-          .concatMap { query ->
-            api.taggedQuestions(query)
-                  .observeOn(AndroidSchedulers.mainThread())
-                  .subscribeOn(Schedulers.io())
-          }
-          .subscribe(
-                { questions -> populateView(questions) },
-                { error -> Log.e("Uhuu", "Error") },
-                { Log.d("Uhuu", "Completed") }
-          )
+        .skip(3)
+        .doOnNext { charSequence -> Log.v(this.javaClass.simpleName, "Buscando: $charSequence") }
+        .throttleLast(100, TimeUnit.MILLISECONDS)
+        .debounce(200, TimeUnit.MILLISECONDS)
+        .onBackpressureLatest()
+        .observeOn(AndroidSchedulers.mainThread())
+        .filter { charSequence -> !charSequence.isNullOrBlank() }
+        .map { charSequence -> charSequence.toString() }
+        .concatMap { query ->
+          api.taggedQuestions(query)
+              .observeOn(AndroidSchedulers.mainThread())
+              .subscribeOn(Schedulers.io())
+        }
+        .subscribe(
+            { questions -> populateView(questions) },
+            { error -> Log.e("Uhuu", "Error") },
+            { Log.d("Uhuu", "Completed") }
+        )
   }
 
 
@@ -87,19 +87,22 @@ class SearchActivity : AppCompatActivity() {
 
     when (item.itemId) {
       R.id.menu_score_ascending -> {
-        adapter.scoreAscending()
-        return true
+        adapter.scoreAscending(); return true
       }
       R.id.menu_score_descending -> {
         adapter.scoreDescending()
         return true
       }
+      R.id.menu_unanswered -> returningTrue {
+        adapter.showUnanswered()
+      }
     }
+
     return false
   }
 
   private fun populateView(questions: StackOverflowQuestions?) {
-    adapter.setQuestions(questions?.items ?: emptyList())
+    adapter.questions = questions?.items ?: emptyList()
   }
 
   override fun onDestroy() {
