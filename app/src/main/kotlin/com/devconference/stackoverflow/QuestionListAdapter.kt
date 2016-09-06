@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 class QuestionListAdapter(
-    context: Context,
-    private val questions: List<StackOverflowQuestion>
+    context: Context
 ) : RecyclerView.Adapter<QuestionViewHolder>() {
 
+  private val questions = mutableListOf<StackOverflowQuestion>()
   private val layoutInflater by lazy { LayoutInflater.from(context) }
 
   override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
@@ -26,6 +26,14 @@ class QuestionListAdapter(
   }
 
   override fun getItemCount() = questions.size
+
+  fun setQuestions(questions: List<StackOverflowQuestion>) {
+    this.questions.apply {
+      clear()
+      addAll(questions)
+    }
+    notifyDataSetChanged()
+  }
 }
 
 class QuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {

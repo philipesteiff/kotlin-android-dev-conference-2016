@@ -28,10 +28,14 @@ class SearchActivity : AppCompatActivity() {
   val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
 
   private var searchInputSubscription: Subscription? = null
+  private val adapter: QuestionListAdapter by lazy { QuestionListAdapter(this) }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_search)
+
+    questionListRecyclerVIew.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
+    questionListRecyclerVIew.adapter = adapter
 
     searchInputSubscription = editSearchInput.textChangeSearchBehaviorObservable()
         .concatMap { query ->
@@ -46,9 +50,8 @@ class SearchActivity : AppCompatActivity() {
         )
   }
 
-  private fun populateView(questions: StackOverflowQuestions) {
-    questionListRecyclerVIew.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
-    questionListRecyclerVIew.adapter = QuestionListAdapter(this, questions.items)
+  private fun populateView(questions: StackOverflowQuestions?) {
+    adapter.setQuestions(questions?.items ?: emptyList())
   }
 
   override fun onDestroy() {
