@@ -15,13 +15,19 @@ import java.util.concurrent.TimeUnit
  * -> JvmOverloads
  * Faz com que o compilador gere os construtores passando os parametros defaults.
  */
-class SearchWidget @JvmOverloads constructor(
-      context: Context,
-      attrs: AttributeSet? = null,
-      defStyleAttr: Int = 0,
-      defStyleRes: Int = 0
-) : EditText(context, attrs, defStyleAttr, defStyleRes) {
+class SearchWidget : EditText {
 
+  constructor(context: Context)
+  : super(context)
+
+  constructor(context: Context, attrs: AttributeSet? = null)
+  : super(context, attrs)
+
+  constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
+  : super(context, attrs, defStyleAttr)
+
+  constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0, defStyleRes: Int = 0)
+  : super(context, attrs, defStyleAttr, defStyleRes)
 
   /**
    * -> Companion object
@@ -34,14 +40,14 @@ class SearchWidget @JvmOverloads constructor(
   }
 
   fun textChangeSearchBehaviorObservable(): Observable<String> = textChangeObservable()
-        .skip(3)
-        .doOnNext { charSequence -> Log.v(TAG, "Buscando: $charSequence") }
-        .throttleLast(100, TimeUnit.MILLISECONDS)
-        .debounce(200, TimeUnit.MILLISECONDS)
-        .onBackpressureLatest()
-        .observeOn(AndroidSchedulers.mainThread())
-        .filter { charSequence -> !charSequence.isNullOrBlank() }
-        .map { charSequence -> charSequence.toString() }
+      .skip(3)
+      .doOnNext { charSequence -> Log.v(TAG, "Buscando: $charSequence") }
+      .throttleLast(100, TimeUnit.MILLISECONDS)
+      .debounce(200, TimeUnit.MILLISECONDS)
+      .onBackpressureLatest()
+      .observeOn(AndroidSchedulers.mainThread())
+      .filter { charSequence -> !charSequence.isNullOrBlank() }
+      .map { charSequence -> charSequence.toString() }
 
   private fun textChangeObservable(): Observable<CharSequence> = Observable.create { subscriber ->
     addTextChangedListener(object : TextWatcher {
