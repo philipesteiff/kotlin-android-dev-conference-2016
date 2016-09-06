@@ -57,7 +57,6 @@ class SearchActivity : AppCompatActivity() {
 
     searchInputSubscription = editSearchInput.onTextChanged()
         .skip(3)
-        .doOnNext { charSequence -> Log.v(this.javaClass.simpleName, "Buscando: $charSequence") }
         .throttleLast(100, TimeUnit.MILLISECONDS)
         .debounce(200, TimeUnit.MILLISECONDS)
         .onBackpressureLatest()
