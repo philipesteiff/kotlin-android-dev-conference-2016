@@ -10,6 +10,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
 import android.widget.LinearLayout
+import android.widget.Toast
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
@@ -42,7 +43,11 @@ class SearchActivity : AppCompatActivity() {
   private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
   private val editSearchInput by lazy { findViewById(R.id.edit_search_input) as EditText }
   private val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
-  private val adapter by lazy { QuestionListAdapter(this) }
+  private val adapter by lazy {
+    QuestionListAdapter(this) { question ->
+      Toast.makeText(this, "Clicked ${question.title}", Toast.LENGTH_SHORT).show()
+    }
+  }
 
   private var searchInputSubscription: Subscription? = null
 

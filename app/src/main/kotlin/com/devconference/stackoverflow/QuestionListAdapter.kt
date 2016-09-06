@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 class QuestionListAdapter(
-    context: Context
+    context: Context,
+    val callBack: (StackOverflowQuestion) -> Unit
 ) : RecyclerView.Adapter<QuestionViewHolder>() {
 
   var questions = listOf<StackOverflowQuestion>()
@@ -23,6 +24,10 @@ class QuestionListAdapter(
     with(questions[position]) {
       holder.titleView.text = title
       holder.detailsView.text = "Score: $score | Respostas: $answerCount | Views: $viewCount"
+
+      holder.view.setOnClickListener {
+        callBack(this)
+      }
     }
   }
 
@@ -49,7 +54,7 @@ class QuestionListAdapter(
   }
 }
 
-class QuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class QuestionViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
   val titleView = view.findViewById(R.id.question_title_text_view) as TextView
   val detailsView = view.findViewById(R.id.question_details_text_view) as TextView
 }
