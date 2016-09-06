@@ -45,6 +45,17 @@ class QuestionListAdapter(
     questions.sortByDescending { it.score }
     notifyDataSetChanged()
   }
+
+  fun showUnanswered() {
+    val filtered = questions.filter { it.answerCount == 0 }
+
+    questions.apply {
+      clear()
+      addAll(filtered)
+    }
+
+    notifyDataSetChanged()
+  }
 }
 
 class QuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {

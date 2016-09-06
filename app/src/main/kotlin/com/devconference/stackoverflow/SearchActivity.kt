@@ -22,10 +22,10 @@ class SearchActivity : AppCompatActivity() {
 
   val api: StackOverflowApi by lazy {
     val retrofit = Retrofit.Builder()
-          .baseUrl("https://api.stackexchange.com")
-          .addConverterFactory(GsonConverterFactory.create())
-          .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-          .build()
+        .baseUrl("https://api.stackexchange.com")
+        .addConverterFactory(GsonConverterFactory.create())
+        .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+        .build()
     retrofit.create(StackOverflowApi::class.java)
   }
 
@@ -46,24 +46,24 @@ class SearchActivity : AppCompatActivity() {
     questionListRecyclerVIew.adapter = adapter
 
     searchInputSubscription = editSearchInput.onTextChanged()
-          .skip(3)
-          .doOnNext { charSequence -> Log.v(this.javaClass.simpleName, "Buscando: $charSequence") }
-          .throttleLast(100, TimeUnit.MILLISECONDS)
-          .debounce(200, TimeUnit.MILLISECONDS)
-          .onBackpressureLatest()
-          .observeOn(AndroidSchedulers.mainThread())
-          .filter { charSequence -> !charSequence.isNullOrBlank() }
-          .map { charSequence -> charSequence.toString() }
-          .concatMap { query ->
-            api.taggedQuestions(query)
-                  .observeOn(AndroidSchedulers.mainThread())
-                  .subscribeOn(Schedulers.io())
-          }
-          .subscribe(
-                { questions -> populateView(questions) },
-                { error -> Log.e("Uhuu", "Error") },
-                { Log.d("Uhuu", "Completed") }
-          )
+        .skip(3)
+        .doOnNext { charSequence -> Log.v(this.javaClass.simpleName, "Buscando: $charSequence") }
+        .throttleLast(100, TimeUnit.MILLISECONDS)
+        .debounce(200, TimeUnit.MILLISECONDS)
+        .onBackpressureLatest()
+        .observeOn(AndroidSchedulers.mainThread())
+        .filter { charSequence -> !charSequence.isNullOrBlank() }
+        .map { charSequence -> charSequence.toString() }
+        .concatMap { query ->
+          api.taggedQuestions(query)
+              .observeOn(AndroidSchedulers.mainThread())
+              .subscribeOn(Schedulers.io())
+        }
+        .subscribe(
+            { questions -> populateView(questions) },
+            { error -> Log.e("Uhuu", "Error") },
+            { Log.d("Uhuu", "Completed") }
+        )
   }
 
 
@@ -77,14 +77,17 @@ class SearchActivity : AppCompatActivity() {
 
     when (item.itemId) {
       R.id.menu_score_ascending -> {
-        adapter.scoreAscending()
-        return true
+        adapter.scoreAscending(); return true
       }
       R.id.menu_score_descending -> {
         adapter.scoreDescending()
         return true
       }
+      R.id.menu_unanswered -> returningTrue {
+        adapter.showUnanswered()
+      }
     }
+
     return false
   }
 
