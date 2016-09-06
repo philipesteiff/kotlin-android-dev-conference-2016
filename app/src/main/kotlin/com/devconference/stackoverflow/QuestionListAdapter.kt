@@ -11,7 +11,12 @@ class QuestionListAdapter(
     context: Context
 ) : RecyclerView.Adapter<QuestionViewHolder>() {
 
-  private val questions = mutableListOf<StackOverflowQuestion>()
+  var questions = listOf<StackOverflowQuestion>()
+    set(elements) {
+      field = elements
+      notifyDataSetChanged()
+    }
+
   private val layoutInflater by lazy { LayoutInflater.from(context) }
 
   override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
@@ -28,32 +33,18 @@ class QuestionListAdapter(
 
   override fun getItemCount() = questions.size
 
-  fun setQuestions(questions: List<StackOverflowQuestion>) {
-    this.questions.apply {
-      clear()
-      addAll(questions)
-    }
-    notifyDataSetChanged()
-  }
-
   fun scoreAscending() {
-    questions.sortBy { it.score }
+    questions = questions.sortedBy { it.score }
     notifyDataSetChanged()
   }
 
   fun scoreDescending() {
-    questions.sortByDescending { it.score }
+    questions = questions.sortedByDescending { it.score }
     notifyDataSetChanged()
   }
 
   fun showUnanswered() {
-    val filtered = questions.filter { it.answerCount == 0 }
-
-    questions.apply {
-      clear()
-      addAll(filtered)
-    }
-
+    questions = questions.filter { it.answerCount == 0 }
     notifyDataSetChanged()
   }
 }

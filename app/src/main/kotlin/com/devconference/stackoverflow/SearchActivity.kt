@@ -92,7 +92,7 @@ class SearchActivity : AppCompatActivity() {
   }
 
   private fun populateView(questions: StackOverflowQuestions?) {
-    adapter.setQuestions(questions?.items ?: emptyList())
+    adapter.questions = questions?.items ?: emptyList()
   }
 
   override fun onDestroy() {
