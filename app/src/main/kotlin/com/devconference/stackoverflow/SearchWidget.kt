@@ -18,10 +18,8 @@ import java.util.concurrent.TimeUnit
 class SearchWidget @JvmOverloads constructor(
       context: Context,
       attrs: AttributeSet? = null,
-      defStyleAttr: Int = 0,
-      defStyleRes: Int = 0
-) : EditText(context, attrs, defStyleAttr, defStyleRes) {
-
+      defStyleAttr: Int = 0
+) : EditText(context, attrs, defStyleAttr) {
 
   /**
    * -> Companion object
