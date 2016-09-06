@@ -34,6 +34,14 @@ class QuestionListAdapter(
     }
     notifyDataSetChanged()
   }
+
+  fun scoreAscending() {
+    questions.sortBy { it.score }
+  }
+
+  fun scoreDescending() {
+    questions.sortByDescending { it.score }
+  }
 }
 
 class QuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {

@@ -5,6 +5,8 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.LinearLayout
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
@@ -48,6 +50,29 @@ class SearchActivity : AppCompatActivity() {
             { error -> Log.e("Uhuu", "Error") },
             { Log.d("Uhuu", "Completed") }
         )
+  }
+
+
+
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.question_list_sorting_menu, menu)
+    return true
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    if (item == null) return false
+
+    when (item.itemId) {
+      R.id.menu_score_ascending -> {
+        adapter.scoreAscending()
+        return true
+      }
+      R.id.menu_score_descending -> {
+        adapter.scoreDescending()
+        return true
+      }
+    }
+    return false
   }
 
   private fun populateView(questions: StackOverflowQuestions?) {
