@@ -32,7 +32,7 @@ class SearchActivity : AppCompatActivity() {
   private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
   private val editSearchInput by lazy { findViewById(R.id.edit_search_input) as EditText }
   private val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
-  private val adapter: QuestionListAdapter by lazy { QuestionListAdapter(this) }
+  private val adapter by lazy { QuestionListAdapter(this) }
 
   private var searchInputSubscription: Subscription? = null
 
