@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -26,6 +27,7 @@ class SearchActivity : AppCompatActivity() {
     retrofit.create(StackOverflowApi::class.java)
   }
 
+  val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
   val editSearchInput by lazy { findViewById(R.id.edit_search_input) as SearchWidget }
   val questionListRecyclerVIew by lazy { findViewById(R.id.question_list_recycler_view) as RecyclerView }
 
@@ -35,6 +37,8 @@ class SearchActivity : AppCompatActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_search)
+
+    setSupportActionBar(toolbar)
 
     questionListRecyclerVIew.layoutManager = LinearLayoutManager(this, LinearLayout.VERTICAL, false)
     questionListRecyclerVIew.adapter = adapter

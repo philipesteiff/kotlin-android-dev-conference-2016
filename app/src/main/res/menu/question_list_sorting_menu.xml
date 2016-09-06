@@ -5,11 +5,11 @@
     <item
         android:id="@+id/menu_score_ascending"
         android:title="Score crescente"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/menu_score_descending"
         android:title="Score decrescente"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>
 
 </menu>

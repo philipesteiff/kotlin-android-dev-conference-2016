@@ -37,10 +37,12 @@ class QuestionListAdapter(
 
   fun scoreAscending() {
     questions.sortBy { it.score }
+    notifyDataSetChanged()
   }
 
   fun scoreDescending() {
     questions.sortByDescending { it.score }
+    notifyDataSetChanged()
   }
 }
 
