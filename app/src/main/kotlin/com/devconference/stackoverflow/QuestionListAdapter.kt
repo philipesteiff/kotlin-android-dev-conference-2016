@@ -17,6 +17,7 @@ class QuestionListAdapter(
   override fun onBindViewHolder(holder: QuestionViewHolder, position: Int) {
     with(questions[position]) {
       holder.titleView.text = title
+      holder.detailsView.text = "Score: $score | Respostas: $answerCount | Views: $viewCount"
     }
   }
 
@@ -47,5 +48,6 @@ class QuestionListAdapter(
 }
 
 class QuestionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-  val titleView = view.findViewById(R.id.question_title) as TextView
+  val titleView = view.findViewById(R.id.question_title_text_view) as TextView
+  val detailsView = view.findViewById(R.id.question_details_text_view) as TextView
 }
