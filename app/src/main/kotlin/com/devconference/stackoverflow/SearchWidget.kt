@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit
  * -> JvmOverloads
  * Faz com que o compilador gere os construtores passando os parametros defaults.
  */
+
 class SearchWidget @JvmOverloads constructor(
       context: Context,
       attrs: AttributeSet? = null,
@@ -32,14 +33,14 @@ class SearchWidget @JvmOverloads constructor(
   }
 
   fun textChangeSearchBehaviorObservable(): Observable<String> = textChangeObservable()
-        .skip(3)
-        .doOnNext { charSequence -> Log.v(TAG, "Buscando: $charSequence") }
-        .throttleLast(100, TimeUnit.MILLISECONDS)
-        .debounce(200, TimeUnit.MILLISECONDS)
-        .onBackpressureLatest()
-        .observeOn(AndroidSchedulers.mainThread())
-        .filter { charSequence -> !charSequence.isNullOrBlank() }
-        .map { charSequence -> charSequence.toString() }
+      .skip(3)
+      .doOnNext { charSequence -> Log.v(TAG, "Buscando: $charSequence") }
+      .throttleLast(100, TimeUnit.MILLISECONDS)
+      .debounce(200, TimeUnit.MILLISECONDS)
+      .onBackpressureLatest()
+      .observeOn(AndroidSchedulers.mainThread())
+      .filter { charSequence -> !charSequence.isNullOrBlank() }
+      .map { charSequence -> charSequence.toString() }
 
   private fun textChangeObservable(): Observable<CharSequence> = Observable.create { subscriber ->
     addTextChangedListener(object : TextWatcher {
