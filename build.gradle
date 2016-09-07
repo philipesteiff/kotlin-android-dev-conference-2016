@@ -7,15 +7,6 @@ buildscript {
   }
   dependencies {
     classpath 'com.android.tools.build:gradle:2.1.3'
-
-    /**
-     * Kotlin Roadmap
-     *
-     * - Jack and Jill
-     * - Instant Run
-     */
-
-    /** Integração do Kotlin com Gradle: Declare a dependência do plugin `kotlin-gradle-plugin`. */
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
   }
 }
